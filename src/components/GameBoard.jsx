@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Card from './Card';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
@@ -14,6 +14,8 @@ const GameBoard = ({ selectedAnimals, onNewSelection }) => {
   const [winner, setWinner] = useState(null);
 
   const { width, height } = useWindowSize();
+  const headerRef = useRef(null);
+  const footerRef = useRef(null);
 
   useEffect(() => {
     const initializeGame = () => {
@@ -91,26 +93,49 @@ const GameBoard = ({ selectedAnimals, onNewSelection }) => {
     setWinner(null);
   };
 
+  const calculateCardSize = () => {
+    const numCards = cards.length;
+    const numCols = 4;
+    const numRows = Math.ceil(numCards / numCols);
+
+    const headerHeight = headerRef.current ? headerRef.current.clientHeight : 0;
+    const footerHeight = footerRef.current ? footerRef.current.clientHeight : 0;
+
+    const availableHeight = height - headerHeight - footerHeight - 64; // 64px for extra spacing
+    const cardWidth = width / numCols - 16; // 16px for gap
+    const cardHeight = availableHeight / numRows - 16; // 16px for gap
+
+    const maxCardHeight = 130;
+    const maxCardWidth = 130;
+
+    return {
+      width: `${Math.min(cardWidth, maxCardWidth)}px`,
+      height: `${Math.min(cardHeight, maxCardHeight)}px`,
+    };
+  };
+
+  const cardSize = calculateCardSize();
+
   return (
     <div className="dark:bg-gray-800 min-h-screen flex flex-col items-center justify-center relative p-4">
-      <h1 className="text-white text-3xl mb-4">
+      <h1 className="text-white text-3xl mb-4" ref={headerRef}>
         {gameEnded ? winner : `Player ${turn}'s Turn`}
       </h1>
       <div className="grid grid-cols-4 gap-4">
         {cards.map((card, index) => (
-          <Card key={card.id} animal={card.animal} isFlipped={card.isFlipped || card.isMatched} onClick={() => handleCardClick(index)} />
+          <Card key={card.id} animal={card.animal} isFlipped={card.isFlipped || card.isMatched} onClick={() => handleCardClick(index)} cardSize={cardSize} />
         ))}
       </div>
-      <div className="mt-4 text-white text-center">
+      <div className="mt-4 text-white text-center" ref={footerRef}>
         <div>Player 1 Matches: {matches.player1}</div>
         <div>Player 2 Matches: {matches.player2}</div>
+        {gameEnded && (
+          <div className="mt-8 flex flex-col items-center w-48">
+            <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded mb-4 w-full" onClick={handleReplay}>Replay</button>
+            <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded w-full" onClick={onNewSelection}>Start Over</button>
+          </div>
+        )}
       </div>
-      {gameEnded && (
-        <div className="mt-8 flex flex-col items-center w-48">
-          <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded mb-4 w-full" onClick={handleReplay}>Replay</button>
-          <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded w-full" onClick={onNewSelection}>Start Over</button>
-        </div>
-      )}
       {confettiInstances.map(instance => (
         <Confetti
           key={instance.id}

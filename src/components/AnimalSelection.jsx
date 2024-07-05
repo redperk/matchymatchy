@@ -1,8 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useWindowSize } from 'react-use';
 
 const AnimalSelection = ({ onSubmit }) => {
   const [selectedAnimals, setSelectedAnimals] = useState([]);
   const animals = ['🐅', '🐻', '🐼', '🦊', '🦄', '🫎', '🐖', '🐊', '🦒', '🦏', '🦈', '🐡'];
+  const { width, height } = useWindowSize();
+  const [buttonSize, setButtonSize] = useState({ width: '64px', height: '64px', fontSize: '32px' });
+
+  useEffect(() => {
+    const calculateButtonSize = () => {
+      const numCols = 4;
+      const numRows = Math.ceil(animals.length / numCols);
+
+      const availableHeight = height - 200; // Subtract space for header, footer, and margins
+      const buttonWidth = width / numCols - 16; // 16px for gap
+      const buttonHeight = availableHeight / numRows - 16; // 16px for gap
+
+      const size = Math.min(buttonWidth, buttonHeight, 100); // Cap the size at 100px
+      const fontSize = size * 0.8; // Increase the font size percentage
+      setButtonSize({ width: `${size}px`, height: `${size}px`, fontSize: `${fontSize}px` });
+    };
+
+    calculateButtonSize();
+    window.addEventListener('resize', calculateButtonSize);
+    return () => window.removeEventListener('resize', calculateButtonSize);
+  }, [width, height, animals.length]);
 
   const handleAnimalClick = (animal) => {
     setSelectedAnimals((prev) => {
@@ -14,14 +36,15 @@ const AnimalSelection = ({ onSubmit }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen dark:bg-gray-800">
+    <div className="flex flex-col items-center justify-center min-h-screen dark:bg-gray-800 p-4">
       <h1 className="text-white text-3xl mb-4">Select Animals</h1>
       <div className="grid grid-cols-4 gap-4 mb-4">
         {animals.map((animal) => (
           <button
             key={animal}
-            className={`w-16 h-16 text-6xl ${selectedAnimals.includes(animal) ? 'bg-blue-400' : 'bg-gray-200'} rounded`}
+            className={`flex items-center justify-center rounded ${selectedAnimals.includes(animal) ? 'bg-blue-400' : 'bg-gray-200'}`}
             onClick={() => handleAnimalClick(animal)}
+            style={{ width: buttonSize.width, height: buttonSize.height, fontSize: buttonSize.fontSize }}
           >
             {animal}
           </button>
