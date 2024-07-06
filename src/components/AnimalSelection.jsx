@@ -3,7 +3,7 @@ import { useWindowSize } from 'react-use';
 
 const AnimalSelection = ({ onSubmit }) => {
   const [selectedAnimals, setSelectedAnimals] = useState([]);
-  const animals = ['🐅', '🐻', '🐼', '🦊', '🦄', '🫎', '🐖', '🐊', '🦒', '🦏', '🦈', '🐡'];
+  const animals = ['🐅', '🐻', '🐼', '🦊', '🦄', '🫎', '🐖', '🐊', '🦒', '🦏', '🦈', '🐡', '🐕', '🐈', '🐉', '🐒'  ];
   const { width, height } = useWindowSize();
   const [buttonSize, setButtonSize] = useState({ width: '64px', height: '64px', fontSize: '32px' });
 
@@ -35,9 +35,31 @@ const AnimalSelection = ({ onSubmit }) => {
     });
   };
 
+  const handleSelectAll = () => {
+    setSelectedAnimals(animals);
+  };
+
+  const handleDeselectAll = () => {
+    setSelectedAnimals([]);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen dark:bg-gray-800 p-4">
-      <h1 className="text-white text-3xl mb-4">Select Animals</h1>
+      <h1 className="text-white text-4xl mb-4">Select Animals</h1>
+      <div className="flex mb-4">
+        <button
+          className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded mr-2"
+          onClick={handleSelectAll}
+        >
+          Select All
+        </button>
+        <button
+          className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded"
+          onClick={handleDeselectAll}
+        >
+          Deselect All
+        </button>
+      </div>
       <div className="grid grid-cols-4 gap-4 mb-4">
         {animals.map((animal) => (
           <button
