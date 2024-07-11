@@ -93,6 +93,8 @@ const GameBoard = ({ selectedAnimals, onNewSelection }) => {
     setWinner(null);
   };
 
+  const constrainSize = (value, min, max) => Math.max(Math.min(value, max), min);
+
   const calculateCardSize = () => {
     const numCards = cards.length;
     const numCols = 4;
@@ -107,10 +109,11 @@ const GameBoard = ({ selectedAnimals, onNewSelection }) => {
 
     const maxCardHeight = 130;
     const maxCardWidth = 130;
+    const minCardHeight = 50;
 
     return {
       width: `${Math.min(cardWidth, maxCardWidth)}px`,
-      height: `${Math.min(cardHeight, maxCardHeight)}px`,
+      height: `${constrainSize(cardHeight, minCardHeight, maxCardHeight)}px`,
     };
   };
 
