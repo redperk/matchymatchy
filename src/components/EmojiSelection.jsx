@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useWindowSize } from 'react-use';
-import { FaCog } from 'react-icons/fa';
 
-const AnimalSelection = ({ onSubmit, onOpenSettings }) => {
-  const [selectedAnimals, setSelectedAnimals] = useState([]);
-  const animals = ['🐅', '🐻', '🐼', '🦊', '🦄', '🫎', '🐖', '🐊', '🦒', '🦏', '🦈', '🐡', '🐕', '🐈', '🐉', '🐒'];
+const EmojiSelection = ({ onSubmit, selectedGenre }) => {
+  const [selectedEmojis, setSelectedEmojis] = useState([]);
+  const genres = {
+    animals: ['🐅', '🐻', '🐼', '🦊', '🦄', '🫎', '🐖', '🐊', '🦒', '🦏', '🦈', '🐡', '🐕', '🐈', '🐉', '🐒'],
+    plants: ['🌲', '🌳', '🌴', '🌵', '🌿', '🍀', '🍁', '🍂', '🍃', '🌺', '🌻', '🌼', '🌷', '🌸', '💐', '🍄'],
+    faces: ['😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '🥰', '😗'],
+    clocks: ['🕐', '🕑', '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚', '🕛', '🕜', '🕝', '🕞', '🕟'],
+    desserts: ['🍰', '🍦', '🍧', '🍨', '🍩', '🍪', '🎂', '🍫', '🍬', '🍭', '🍮', '🍯', '🥧', '🧁', '🍡', '🍢']
+  };
+
   const { width, height } = useWindowSize();
   const [buttonSize, setButtonSize] = useState({ width: '64px', height: '64px', fontSize: '32px' });
 
   useEffect(() => {
     const calculateButtonSize = () => {
       const numCols = 4;
-      const numRows = Math.ceil(animals.length / numCols);
+      const numRows = Math.ceil(genres[selectedGenre].length / numCols);
 
       const availableHeight = height - 200; // Subtract space for header, footer, and margins
       const buttonWidth = width / numCols - 16; // 16px for gap
@@ -25,33 +31,28 @@ const AnimalSelection = ({ onSubmit, onOpenSettings }) => {
     calculateButtonSize();
     window.addEventListener('resize', calculateButtonSize);
     return () => window.removeEventListener('resize', calculateButtonSize);
-  }, [width, height, animals.length]);
+  }, [width, height, genres, selectedGenre]);
 
-  const handleAnimalClick = (animal) => {
-    setSelectedAnimals((prev) => {
-      if (prev.includes(animal)) {
-        return prev.filter((a) => a !== animal);
+  const handleEmojiClick = (emoji) => {
+    setSelectedEmojis((prev) => {
+      if (prev.includes(emoji)) {
+        return prev.filter((e) => e !== emoji);
       }
-      return [...prev, animal];
+      return [...prev, emoji];
     });
   };
 
   const handleSelectAll = () => {
-    setSelectedAnimals(animals);
+    setSelectedEmojis(genres[selectedGenre]);
   };
 
   const handleDeselectAll = () => {
-    setSelectedAnimals([]);
+    setSelectedEmojis([]);
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen dark:bg-gray-800 p-4">
-      <div className="absolute top-4 right-4">
-        <button onClick={onOpenSettings} className="text-white text-2xl">
-          <FaCog />
-        </button>
-      </div>
-      <h1 className="text-white text-4xl mb-4">Select Animals</h1>
+      <h1 className="text-white text-4xl mb-4">Select Emojis</h1>
       <div className="flex mb-4">
         <button
           className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded mr-2"
@@ -67,20 +68,20 @@ const AnimalSelection = ({ onSubmit, onOpenSettings }) => {
         </button>
       </div>
       <div className="grid grid-cols-4 gap-4 mb-4">
-        {animals.map((animal) => (
+        {genres[selectedGenre].map((emoji) => (
           <button
-            key={animal}
-            className={`flex items-center justify-center rounded ${selectedAnimals.includes(animal) ? 'bg-blue-400' : 'bg-gray-200'}`}
-            onClick={() => handleAnimalClick(animal)}
+            key={emoji}
+            className={`flex items-center justify-center rounded ${selectedEmojis.includes(emoji) ? 'bg-blue-400' : 'bg-gray-200'}`}
+            onClick={() => handleEmojiClick(emoji)}
             style={{ width: buttonSize.width, height: buttonSize.height, fontSize: buttonSize.fontSize }}
           >
-            {animal}
+            {emoji}
           </button>
         ))}
       </div>
       <button
         className="bg-gradient-to-r from-blue-500 to-purple-500 text-white mt-4 px-10 py-4 rounded"
-        onClick={() => onSubmit(selectedAnimals)}
+        onClick={() => onSubmit(selectedEmojis)}
       >
         Start
       </button>
@@ -88,4 +89,4 @@ const AnimalSelection = ({ onSubmit, onOpenSettings }) => {
   );
 };
 
-export default AnimalSelection;
+export default EmojiSelection;
