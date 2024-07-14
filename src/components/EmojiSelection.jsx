@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useWindowSize } from 'react-use';
 
-const EmojiSelection = ({ onSubmit, selectedGenre }) => {
+const EmojiSelection = ({ onSubmit, selectedGenre, colorScheme }) => {
   const [selectedEmojis, setSelectedEmojis] = useState([]);
   const genres = {
     animals: ['🐅', '🐻', '🐼', '🦊', '🦄', '🫎', '🐖', '🐊', '🦒', '🦏', '🦈', '🐡', '🐕', '🐈', '🐉', '🐒'],
@@ -31,7 +31,7 @@ const EmojiSelection = ({ onSubmit, selectedGenre }) => {
     calculateButtonSize();
     window.addEventListener('resize', calculateButtonSize);
     return () => window.removeEventListener('resize', calculateButtonSize);
-  }, [width, height, genres, selectedGenre]);
+  }, [width, height, selectedGenre]);
 
   const handleEmojiClick = (emoji) => {
     setSelectedEmojis((prev) => {
@@ -55,13 +55,13 @@ const EmojiSelection = ({ onSubmit, selectedGenre }) => {
       <h1 className="text-white text-4xl mb-4">Select Emojis</h1>
       <div className="flex mb-4">
         <button
-          className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded mr-2"
+          className={`bg-gradient-to-r ${colorScheme} text-white px-4 py-2 rounded mr-2`}
           onClick={handleSelectAll}
         >
           Select All
         </button>
         <button
-          className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded"
+          className={`bg-gradient-to-r ${colorScheme} text-white px-4 py-2 rounded`}
           onClick={handleDeselectAll}
         >
           Deselect All
@@ -80,7 +80,7 @@ const EmojiSelection = ({ onSubmit, selectedGenre }) => {
         ))}
       </div>
       <button
-        className="bg-gradient-to-r from-blue-500 to-purple-500 text-white mt-4 px-10 py-4 rounded"
+        className={`bg-gradient-to-r ${colorScheme} text-white mt-4 px-10 py-4 rounded`}
         onClick={() => onSubmit(selectedEmojis)}
       >
         Start

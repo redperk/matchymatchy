@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, selectedPlayers, selectedGenre }) => {
+const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, onSelectColorScheme, selectedPlayers, selectedGenre, selectedColorScheme }) => {
   const [currentPlayers, setCurrentPlayers] = useState(selectedPlayers);
   const [currentGenre, setCurrentGenre] = useState(selectedGenre);
+  const [currentColorScheme, setCurrentColorScheme] = useState(selectedColorScheme);
 
   useEffect(() => {
     setCurrentPlayers(selectedPlayers);
@@ -11,6 +12,10 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, selectedPlayers
   useEffect(() => {
     setCurrentGenre(selectedGenre);
   }, [selectedGenre]);
+
+  useEffect(() => {
+    setCurrentColorScheme(selectedColorScheme);
+  }, [selectedColorScheme]);
 
   const handlePlayerSelection = (players) => {
     setCurrentPlayers(players);
@@ -22,6 +27,19 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, selectedPlayers
     onSelectGenre(genre);
   };
 
+  const handleColorSchemeSelection = (colorScheme) => {
+    setCurrentColorScheme(colorScheme);
+    onSelectColorScheme(colorScheme);
+  };
+
+  const colorSchemes = [
+    'from-blue-500 to-purple-500',
+    'from-green-500 to-blue-500',
+    'from-blue-500 to-pink-500',
+    'from-pink-500 to-orange-500',
+    'from-pink-500 to-purple-500'
+  ];
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen dark:bg-gray-800 p-6">
       <h1 className="text-white text-4xl mb-6">Settings</h1>
@@ -32,7 +50,7 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, selectedPlayers
           {[1, 2, 3, 4].map((num) => (
             <button
               key={num}
-              className={`bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded ${currentPlayers === num ? 'border border-white' : ''}`}
+              className={`bg-gradient-to-r ${currentColorScheme} text-white px-4 py-4 rounded ${currentPlayers === num ? 'border border-white' : ''}`}
               onClick={() => handlePlayerSelection(num)}
             >
               {num} Player{num > 1 ? 's' : ''}
@@ -47,7 +65,7 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, selectedPlayers
           {['animals', 'plants', 'faces', 'clocks', 'desserts'].map((genre) => (
             <button
               key={genre}
-              className={`bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded ${currentGenre === genre ? 'border border-white' : ''}`}
+              className={`bg-gradient-to-r ${currentColorScheme} text-white px-4 py-4 rounded ${currentGenre === genre ? 'border border-white' : ''}`}
               onClick={() => handleGenreSelection(genre)}
             >
               {genre.charAt(0).toUpperCase() + genre.slice(1)}
@@ -56,8 +74,21 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, selectedPlayers
         </div>
       </div>
 
+      <div className="mb-8 w-full max-w-md">
+        <h2 className="text-white text-2xl mb-4 text-center">Color Scheme</h2>
+        <div className="grid grid-cols-3 gap-4">
+          {colorSchemes.map((colorScheme) => (
+            <button
+              key={colorScheme}
+              className={`bg-gradient-to-r ${colorScheme} text-white h-12 rounded-full ${currentColorScheme === colorScheme ? 'border border-white' : ''}`}
+              onClick={() => handleColorSchemeSelection(colorScheme)}
+            />
+          ))}
+        </div>
+      </div>
+
       <button
-        className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-10 py-4 rounded mt-4"
+        className={`bg-gradient-to-r ${currentColorScheme} text-white px-10 py-4 rounded mt-4`}
         onClick={onClose}
       >
         Close

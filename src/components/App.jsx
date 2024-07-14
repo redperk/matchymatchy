@@ -8,6 +8,7 @@ const App = () => {
   const [selectedEmojis, setSelectedEmojis] = useState([]);
   const [numPlayers, setNumPlayers] = useState(2); // Default to 2 players
   const [selectedGenre, setSelectedGenre] = useState('animals'); // Default to animals
+  const [selectedColorScheme, setSelectedColorScheme] = useState('from-blue-500 to-purple-500'); // Default color scheme
   const [showSettings, setShowSettings] = useState(false);
   const [inGame, setInGame] = useState(false);
 
@@ -32,13 +33,20 @@ const App = () => {
           onClose={handleSettingsClose}
           onSelectPlayers={setNumPlayers}
           onSelectGenre={setSelectedGenre}
+          onSelectColorScheme={setSelectedColorScheme}
           selectedPlayers={numPlayers}
           selectedGenre={selectedGenre}
+          selectedColorScheme={selectedColorScheme}
         />
       ) : selectedEmojis.length === 0 ? (
-        <EmojiSelection onSubmit={handleEmojiSelection} selectedGenre={selectedGenre} />
+        <EmojiSelection onSubmit={handleEmojiSelection} selectedGenre={selectedGenre} colorScheme={selectedColorScheme} />
       ) : (
-        <GameBoard selectedAnimals={selectedEmojis} numPlayers={numPlayers} onNewSelection={handleNewSelection} />
+        <GameBoard
+          selectedAnimals={selectedEmojis}
+          numPlayers={numPlayers}
+          onNewSelection={handleNewSelection}
+          colorScheme={selectedColorScheme}
+        />
       )}
       {!showSettings && !inGame && (
         <button
