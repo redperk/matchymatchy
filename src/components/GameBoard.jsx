@@ -3,11 +3,11 @@ import Card from './Card';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 
-const GameBoard = ({ selectedAnimals, onNewSelection }) => {
+const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection }) => {
   const [cards, setCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState([]);
   const [turn, setTurn] = useState(1);
-  const [matches, setMatches] = useState({ player1: 0, player2: 0 });
+  const [matches, setMatches] = useState({});
   const [gameStarted, setGameStarted] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
   const [confettiInstances, setConfettiInstances] = useState([]);
@@ -24,7 +24,10 @@ const GameBoard = ({ selectedAnimals, onNewSelection }) => {
         .map((animal, index) => ({ id: index, animal, isFlipped: false, isMatched: false }));
       setCards(shuffledCards);
       setFlippedCards([]);
-      setMatches({ player1: 0, player2: 0 });
+      setMatches({});
+      for (let i = 1; i <= numPlayers; i++) {
+        setMatches((prev) => ({ ...prev, [`Player ${i}`]: 0 }));
+      }
       setTurn(1);
       setGameEnded(false);
       setGameStarted(true);
@@ -32,7 +35,7 @@ const GameBoard = ({ selectedAnimals, onNewSelection }) => {
     };
 
     initializeGame();
-  }, [selectedAnimals]);
+  }, [selectedAnimals, numPlayers]);
 
   const handleCardClick = (index) => {
     if (cards[index].isFlipped || cards[index].isMatched || flippedCards.length === 2) return;
@@ -52,7 +55,7 @@ const GameBoard = ({ selectedAnimals, onNewSelection }) => {
         );
         setCards(newCards);
         setFlippedCards([]);
-        setMatches(prev => ({ ...prev, [`player${turn}`]: prev[`player${turn}`] + 1 }));
+        setMatches(prev => ({ ...prev, [`Player ${turn}`]: prev[`Player ${turn}`] + 1 }));
 
         const newConfettiInstance = { id: Date.now() };
         setConfettiInstances(prev => [...prev, newConfettiInstance]);
@@ -67,19 +70,26 @@ const GameBoard = ({ selectedAnimals, onNewSelection }) => {
           );
           setCards(newCards);
           setFlippedCards([]);
-          setTurn(turn === 1 ? 2 : 1);
+          setTurn(turn === numPlayers ? 1 : turn + 1); // Cycle turns based on number of players
         }, 1000);
       }
     }
-  }, [flippedCards, cards, turn]);
+  }, [flippedCards, cards, turn, numPlayers]);
 
   useEffect(() => {
     if (gameStarted && cards.every(card => card.isMatched)) {
       setGameEnded(true);
-      const winner = matches.player1 > matches.player2 ? 'Player 1 wins!' : matches.player2 > matches.player1 ? 'Player 2 wins!' : "It's a tie!";
-      setWinner(winner);
+      if (numPlayers === 1) {
+        setWinner('You win!');
+      } else {
+        const playerMatches = Object.entries(matches);
+        const sortedPlayers = playerMatches.sort((a, b) => b[1] - a[1]);
+        const isTie = sortedPlayers.length > 1 && sortedPlayers[0][1] === sortedPlayers[1][1];
+        const winner = isTie ? "It's a tie!" : `${sortedPlayers[0][0]} wins!`;
+        setWinner(winner);
+      }
     }
-  }, [cards, gameStarted, matches]);
+  }, [cards, gameStarted, matches, numPlayers]);
 
   const handleReplay = () => {
     const shuffledCards = [...selectedAnimals, ...selectedAnimals]
@@ -87,7 +97,10 @@ const GameBoard = ({ selectedAnimals, onNewSelection }) => {
       .map((animal, index) => ({ id: index, animal, isFlipped: false, isMatched: false }));
     setCards(shuffledCards);
     setFlippedCards([]);
-    setMatches({ player1: 0, player2: 0 });
+    setMatches({});
+    for (let i = 1; i <= numPlayers; i++) {
+      setMatches((prev) => ({ ...prev, [`Player ${i}`]: 0 }));
+    }
     setTurn(1);
     setGameEnded(false);
     setWinner(null);
@@ -130,8 +143,9 @@ const GameBoard = ({ selectedAnimals, onNewSelection }) => {
         ))}
       </div>
       <div className="mt-4 text-white text-center" ref={footerRef}>
-        <div>Player 1 Matches: {matches.player1}</div>
-        <div>Player 2 Matches: {matches.player2}</div>
+        {[...Array(numPlayers)].map((_, i) => (
+          <div key={i}>Player {i + 1} Matches: {matches[`Player ${i + 1}`]}</div>
+        ))}
         {gameEnded && (
           <div className="mt-8 flex flex-col items-center w-48">
             <button className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded mb-4 w-full" onClick={handleReplay}>Replay</button>

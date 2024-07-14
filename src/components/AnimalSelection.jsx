@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useWindowSize } from 'react-use';
+import { FaCog } from 'react-icons/fa';
 
-const AnimalSelection = ({ onSubmit }) => {
+const AnimalSelection = ({ onSubmit, onOpenSettings }) => {
   const [selectedAnimals, setSelectedAnimals] = useState([]);
-  const animals = ['🐅', '🐻', '🐼', '🦊', '🦄', '🫎', '🐖', '🐊', '🦒', '🦏', '🦈', '🐡', '🐕', '🐈', '🐉', '🐒'  ];
+  const animals = ['🐅', '🐻', '🐼', '🦊', '🦄', '🫎', '🐖', '🐊', '🦒', '🦏', '🦈', '🐡', '🐕', '🐈', '🐉', '🐒'];
   const { width, height } = useWindowSize();
   const [buttonSize, setButtonSize] = useState({ width: '64px', height: '64px', fontSize: '32px' });
 
@@ -45,6 +46,11 @@ const AnimalSelection = ({ onSubmit }) => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen dark:bg-gray-800 p-4">
+      <div className="absolute top-4 right-4">
+        <button onClick={onOpenSettings} className="text-white text-2xl">
+          <FaCog />
+        </button>
+      </div>
       <h1 className="text-white text-4xl mb-4">Select Animals</h1>
       <div className="flex mb-4">
         <button
@@ -76,7 +82,7 @@ const AnimalSelection = ({ onSubmit }) => {
         className="bg-gradient-to-r from-blue-500 to-purple-500 text-white mt-4 px-10 py-4 rounded"
         onClick={() => onSubmit(selectedAnimals)}
       >
-        Submit
+        Start
       </button>
     </div>
   );
