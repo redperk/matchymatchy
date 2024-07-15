@@ -37,7 +37,14 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, onSelectColorSc
     'from-green-500 to-blue-500',
     'from-blue-500 to-pink-500',
     'from-pink-500 to-orange-500',
-    'from-pink-500 to-purple-500'
+    'from-pink-500 to-purple-500',
+    'bg-green-500',
+    'bg-red-500',
+    'bg-yellow-500',
+    'bg-blue-500',
+    'bg-purple-500',
+    'bg-pink-500',
+    'bg-orange-500',
   ];
 
   return (
@@ -62,7 +69,7 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, onSelectColorSc
       <div className="mb-8 w-full max-w-md">
         <h2 className="text-white text-2xl mb-4 text-center">Select Genre</h2>
         <div className="grid grid-cols-2 gap-4">
-          {['animals', 'plants', 'faces', 'clocks', 'desserts'].map((genre) => (
+          {['animals', 'plants', 'faces', 'clocks', 'desserts', 'bugs'].map((genre) => (
             <button
               key={genre}
               className={`bg-gradient-to-r ${currentColorScheme} text-white px-4 py-4 rounded ${currentGenre === genre ? 'border border-white' : ''}`}
@@ -80,7 +87,7 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, onSelectColorSc
           {colorSchemes.map((colorScheme) => (
             <button
               key={colorScheme}
-              className={`bg-gradient-to-r ${colorScheme} text-white h-12 rounded-full ${currentColorScheme === colorScheme ? 'border border-white' : ''}`}
+              className={`bg-gradient-to-r ${colorScheme.includes('bg-') ? colorScheme : ''} ${colorScheme.includes('to-') ? colorScheme : ''} text-white h-12 rounded-full ${currentColorScheme === colorScheme ? 'border border-white' : ''}`}
               onClick={() => handleColorSchemeSelection(colorScheme)}
             />
           ))}

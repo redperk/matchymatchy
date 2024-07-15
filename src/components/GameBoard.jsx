@@ -139,7 +139,7 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
       </div>
       <div className="mt-4 text-white text-center" ref={footerRef}>
         {Object.entries(matches).map(([player, score]) => (
-          <div key={player}>{`Player ${player.replace('player', '')} Matches: ${score}`}</div>
+          <div key={player}>{`Player ${player.replace('player', '')} Matchys: ${score}`}</div>
         ))}
         {gameEnded && (
           <div className="mt-8 flex flex-col items-center w-48">
@@ -153,7 +153,7 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
           key={instance.id}
           width={width}
           height={height}
-          numberOfPieces={200}
+          numberOfPieces={400}
           recycle={false}
           gravity={0.3}
         />
