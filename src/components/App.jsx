@@ -27,7 +27,7 @@ const App = () => {
   };
 
   return (
-    <div>
+       <div className="flex flex-col min-h-screen dark:bg-gray-800">
       {showSettings ? (
         <SettingsPage
           onClose={handleSettingsClose}
@@ -39,14 +39,18 @@ const App = () => {
           selectedColorScheme={selectedColorScheme}
         />
       ) : selectedEmojis.length === 0 ? (
+        <div className="flex-grow">
         <EmojiSelection onSubmit={handleEmojiSelection} selectedGenre={selectedGenre} colorScheme={selectedColorScheme} />
+        </div>
       ) : (
+        <div className="flex-grow">
         <GameBoard
           selectedAnimals={selectedEmojis}
           numPlayers={numPlayers}
           onNewSelection={handleNewSelection}
           colorScheme={selectedColorScheme}
         />
+        </div>
       )}
       {!showSettings && !inGame && (
         <button

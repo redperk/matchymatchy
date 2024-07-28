@@ -23,8 +23,9 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, onSelectColorSc
   };
 
   const handleGenreSelection = (genre) => {
-    setCurrentGenre(genre);
-    onSelectGenre(genre);
+    const genreText = genre.split(' ').slice(1).join(' ').toLowerCase();
+    setCurrentGenre(genreText);
+    onSelectGenre(genreText);
   };
 
   const handleColorSchemeSelection = (colorScheme) => {
@@ -47,59 +48,70 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, onSelectColorSc
     'bg-orange-500',
   ];
 
+  const genres = [
+    { emoji: '🫎', name: 'Animals' },
+    { emoji: '🌲', name: 'Plants' },
+    { emoji: '😂', name: 'Faces' },
+    { emoji: '🕒', name: 'Clocks' },
+    { emoji: '🍦', name: 'Desserts' },
+    { emoji: '🐛', name: 'Bugs' }
+  ];
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen dark:bg-gray-800 p-6">
-      <h1 className="text-white text-4xl mb-6">Settings</h1>
-
-      <div className="mb-8 w-full max-w-md">
-        <h2 className="text-white text-2xl mb-4 text-center">Number of Players</h2>
-        <div className="grid grid-cols-2 gap-4">
-          {[1, 2, 3, 4].map((num) => (
+    <div className="flex flex-col h-screen dark:bg-gray-800 overflow-hidden">
+      <div className="flex-grow overflow-auto px-6 pb-6">
+        <h1 className="text-white text-4xl p-6">Settings</h1>
+        <div className="max-w-md mx-auto">
+          <div className="mb-8">
+            <h2 className="text-white text-2xl mb-4">Number of Players</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {[1, 2, 3, 4].map((num) => (
+                <button
+                  key={num}
+                  className={`bg-gradient-to-r ${currentColorScheme} text-white px-4 py-4 rounded ${currentPlayers === num ? 'border border-white' : ''}`}
+                  onClick={() => handlePlayerSelection(num)}
+                >
+                  {num} Player{num > 1 ? 's' : ''}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="mb-8">
+            <h2 className="text-white text-2xl mb-4">Select Category</h2>
+            <div className="grid grid-cols-2 gap-4">
+            {genres.map(({ emoji, name }) => (
+                <button
+                  key={name}
+                  className={`bg-gradient-to-r ${currentColorScheme} text-white px-4 py-4 rounded ${currentGenre === name.toLowerCase() ? 'border border-white' : ''}`}
+                  onClick={() => handleGenreSelection(`${emoji} ${name}`)}
+                >
+                  {emoji} {name}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="mb-8">
+            <h2 className="text-white text-2xl mb-4">Color Scheme</h2>
+            <div className="grid grid-cols-3 gap-4">
+              {colorSchemes.map((colorScheme) => (
+                <button
+                  key={colorScheme}
+                  className={`bg-gradient-to-r ${colorScheme.includes('bg-') ? colorScheme : ''} ${colorScheme.includes('to-') ? colorScheme : ''} text-white h-12 rounded-full ${currentColorScheme === colorScheme ? 'border border-white' : ''}`}
+                  onClick={() => handleColorSchemeSelection(colorScheme)}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="mt-8 mb-20">
             <button
-              key={num}
-              className={`bg-gradient-to-r ${currentColorScheme} text-white px-4 py-4 rounded ${currentPlayers === num ? 'border border-white' : ''}`}
-              onClick={() => handlePlayerSelection(num)}
+              className={`bg-gradient-to-r ${currentColorScheme} text-white px-10 py-4 rounded w-full`}
+              onClick={onClose}
             >
-              {num} Player{num > 1 ? 's' : ''}
+              Close
             </button>
-          ))}
+          </div>
         </div>
       </div>
-
-      <div className="mb-8 w-full max-w-md">
-        <h2 className="text-white text-2xl mb-4 text-center">Select Genre</h2>
-        <div className="grid grid-cols-2 gap-4">
-          {['animals', 'plants', 'faces', 'clocks', 'desserts', 'bugs'].map((genre) => (
-            <button
-              key={genre}
-              className={`bg-gradient-to-r ${currentColorScheme} text-white px-4 py-4 rounded ${currentGenre === genre ? 'border border-white' : ''}`}
-              onClick={() => handleGenreSelection(genre)}
-            >
-              {genre.charAt(0).toUpperCase() + genre.slice(1)}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mb-8 w-full max-w-md">
-        <h2 className="text-white text-2xl mb-4 text-center">Color Scheme</h2>
-        <div className="grid grid-cols-3 gap-4">
-          {colorSchemes.map((colorScheme) => (
-            <button
-              key={colorScheme}
-              className={`bg-gradient-to-r ${colorScheme.includes('bg-') ? colorScheme : ''} ${colorScheme.includes('to-') ? colorScheme : ''} text-white h-12 rounded-full ${currentColorScheme === colorScheme ? 'border border-white' : ''}`}
-              onClick={() => handleColorSchemeSelection(colorScheme)}
-            />
-          ))}
-        </div>
-      </div>
-
-      <button
-        className={`bg-gradient-to-r ${currentColorScheme} text-white px-10 py-4 rounded mt-4`}
-        onClick={onClose}
-      >
-        Close
-      </button>
     </div>
   );
 };

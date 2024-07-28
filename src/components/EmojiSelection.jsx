@@ -52,42 +52,48 @@ const EmojiSelection = ({ onSubmit, selectedGenre, colorScheme }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen dark:bg-gray-800 p-4">
-      <h1 className="text-white text-4xl mb-4">Select Emojis</h1>
-      <div className="flex mb-4">
-        <button
-          className={`bg-gradient-to-r ${colorScheme} text-white px-4 py-2 rounded mr-2`}
-          onClick={handleSelectAll}
-        >
-          Select All
-        </button>
-        <button
-          className={`bg-gradient-to-r ${colorScheme} text-white px-4 py-2 rounded`}
-          onClick={handleDeselectAll}
-        >
-          Deselect All
-        </button>
+      <div className="flex flex-col items-center justify-center min-h-screen p-4 dark:bg-gray-800">
+        <div className="w-full max-w-md">
+          <h1 className="text-white text-4xl mb-4 text-center">Select Emojis</h1>
+          <div className="flex flex-col items-center">
+            <div className="flex mb-6 w-full justify-center">
+              <button
+                className={`bg-gradient-to-r ${colorScheme} text-white px-4 py-2 rounded mr-2`}
+                onClick={handleSelectAll}
+              >
+                Select All
+              </button>
+              <button
+                className={`bg-gradient-to-r ${colorScheme} text-white px-4 py-2 rounded`}
+                onClick={handleDeselectAll}
+              >
+                Deselect All
+              </button>
+            </div>
+            <div className="grid grid-cols-4 gap-4 mb-6 w-full">
+              {genres[selectedGenre].map((emoji) => (
+                <button
+                  key={emoji}
+                  className={`flex items-center justify-center rounded ${
+                    selectedEmojis.includes(emoji) ? 'bg-blue-400' : 'bg-gray-200'
+                  }`}
+                  onClick={() => handleEmojiClick(emoji)}
+                  style={{ width: buttonSize.width, height: buttonSize.height, fontSize: buttonSize.fontSize }}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+            <button
+              className={`bg-gradient-to-r ${colorScheme} text-white px-10 py-4 rounded w-full`}
+              onClick={() => onSubmit(selectedEmojis)}
+            >
+              Start
+            </button>
+          </div>
+        </div>
       </div>
-      <div className="grid grid-cols-4 gap-4 mb-4">
-        {genres[selectedGenre].map((emoji) => (
-          <button
-            key={emoji}
-            className={`flex items-center justify-center rounded ${selectedEmojis.includes(emoji) ? 'bg-blue-400' : 'bg-gray-200'}`}
-            onClick={() => handleEmojiClick(emoji)}
-            style={{ width: buttonSize.width, height: buttonSize.height, fontSize: buttonSize.fontSize }}
-          >
-            {emoji}
-          </button>
-        ))}
-      </div>
-      <button
-        className={`bg-gradient-to-r ${colorScheme} text-white mt-4 px-10 py-4 rounded`}
-        onClick={() => onSubmit(selectedEmojis)}
-      >
-        Start
-      </button>
-    </div>
-  );
+    );
 };
 
 export default EmojiSelection;

@@ -17,3 +17,19 @@
 .transform-style-preserve-3d {
   transform-style: preserve-3d;
 }
+
+html, body, #root {
+  @apply h-full overflow-hidden;
+}
+
+body {
+  @apply touch-none;
+}
+
+.game-container {
+  @apply h-full flex flex-col;
+}
+
+.card-grid {
+  @apply grid grid-cols-4 gap-4 max-w-full max-h-full overflow-auto;
+}

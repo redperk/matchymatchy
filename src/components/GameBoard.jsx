@@ -14,8 +14,17 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
   const [winner, setWinner] = useState(null);
 
   const { width, height } = useWindowSize();
-  const headerRef = useRef(null);
-  const footerRef = useRef(null);
+
+  const [showWinScreen, setShowWinScreen] = useState(false);
+
+  useEffect(() => {
+    if (gameEnded) {
+      // Delay showing the win screen to ensure state updates have completed
+      setTimeout(() => setShowWinScreen(true), 300);
+    } else {
+      setShowWinScreen(false);
+    }
+  }, [gameEnded]);
 
   useEffect(() => {
     const initializeGame = () => {
@@ -80,8 +89,15 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
   useEffect(() => {
     if (gameStarted && cards.every(card => card.isMatched)) {
       setGameEnded(true);
-      const winner = Object.entries(matches).reduce((max, player) => (player[1] > max[1] ? player : max));
-      setWinner(winner[1] > 0 ? `Player ${winner[0].replace('player', '')} wins!` : "It's a tie!");
+      const scores = Object.entries(matches);
+      const maxScore = Math.max(...scores.map(([_, score]) => score));
+      const winners = scores.filter(([_, score]) => score === maxScore);
+
+      if (winners.length > 1) {
+        setWinner("It's a tie!");
+      } else {
+        setWinner(`Player ${winners[0][0].replace('player', '')} wins!`);
+      }
     }
   }, [cards, gameStarted, matches]);
 
@@ -101,53 +117,63 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
     setWinner(null);
   };
 
-  const constrainSize = (value, min, max) => Math.max(Math.min(value, max), min);
-
   const calculateCardSize = () => {
     const numCards = cards.length;
-    const numCols = 4;
+    const numCols = 4; // Fixed number of columns
     const numRows = Math.ceil(numCards / numCols);
 
-    const headerHeight = headerRef.current ? headerRef.current.clientHeight : 0;
-    const footerHeight = footerRef.current ? footerRef.current.clientHeight : 0;
+    const headerHeight = 50; // Estimated height for header
+    const footerHeight = 80; // Estimated height for footer
 
-    const availableHeight = height - headerHeight - footerHeight - 64; // 64px for extra spacing
-    const cardWidth = width / numCols - 16; // 16px for gap
-    const cardHeight = availableHeight / numRows - 16; // 16px for gap
+    const availableHeight = window.innerHeight - headerHeight - footerHeight; // 32px for padding
+    const availableWidth = width - 32; // 32px for padding
 
-    const maxCardHeight = 130;
-    const maxCardWidth = 130;
-    const minCardHeight = 50;
+    const cardWidth = Math.min(availableWidth / numCols - 8, 130);
+    const cardHeight = Math.min(availableHeight / numRows - 8, 130);
 
     return {
-      width: `${Math.min(cardWidth, maxCardWidth)}px`,
-      height: `${constrainSize(cardHeight, minCardHeight, maxCardHeight)}px`,
+      width: `${Math.floor(cardWidth)}px`,
+      height: `${Math.floor(cardHeight)}px`,
     };
   };
 
   const cardSize = calculateCardSize();
 
   return (
-    <div className="dark:bg-gray-800 min-h-screen flex flex-col items-center justify-center relative p-4">
-      <h1 className="text-white text-3xl mb-4" ref={headerRef}>
-        {gameEnded ? winner : `Player ${turn}'s Turn`}
-      </h1>
-      <div className="grid grid-cols-4 gap-4">
-        {cards.map((card, index) => (
-          <Card key={card.id} animal={card.animal} isFlipped={card.isFlipped || card.isMatched} onClick={() => handleCardClick(index)} cardSize={cardSize} colorScheme={colorScheme} />
-        ))}
+    <div className="flex flex-col h-screen dark:bg-gray-800 overflow-hidden">
+      <div className="flex-shrink-0 pt-4 px-4">
+        <h1 className="text-white text-center text-2xl mb-2">
+          {gameEnded ? winner : `Player ${turn}'s Turn`}
+        </h1>
+        <div className="flex flex-wrap justify-between text-white text-sm">
+          {Object.entries(matches).map(([player, score]) => (
+            <div key={player} className="mr-2">{`Player ${player.replace('player', '')}: ${score}`}</div>
+          ))}
+        </div>
       </div>
-      <div className="mt-4 text-white text-center" ref={footerRef}>
-        {Object.entries(matches).map(([player, score]) => (
-          <div key={player}>{`Player ${player.replace('player', '')} Matchys: ${score}`}</div>
-        ))}
-        {gameEnded && (
-          <div className="mt-8 flex flex-col items-center w-48">
-            <button className={`bg-gradient-to-r ${colorScheme} text-white px-4 py-2 rounded mb-4 w-full`} onClick={handleReplay}>Replay</button>
-            <button className={`bg-gradient-to-r ${colorScheme} text-white px-4 py-2 rounded w-full`} onClick={onNewSelection}>Start Over</button>
+      <div className="flex-grow flex items-center justify-center overflow-auto px-4 pb-12">
+        <div className="grid grid-cols-4 gap-2 max-w-full max-h-full">
+          {cards.map((card, index) => (
+            <Card
+              key={card.id}
+              animal={card.animal}
+              isFlipped={card.isFlipped || card.isMatched}
+              onClick={() => handleCardClick(index)}
+              cardSize={cardSize}
+              colorScheme={colorScheme}
+            />
+          ))}
+        </div>
+      </div>
+      {showWinScreen && (
+        <div className="absolute inset-0 bg-gray-800 bg-opacity-90 flex flex-col items-center justify-center z-10">
+          <h2 className="text-white text-4xl mb-8">{winner}</h2>
+          <div className="flex space-x-4">
+            <button className={`bg-gradient-to-r ${colorScheme} text-white px-6 py-2 rounded`} onClick={handleReplay}>Replay</button>
+            <button className={`bg-gradient-to-r ${colorScheme} text-white px-6 py-2 rounded`} onClick={onNewSelection}>Start Over</button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
       {confettiInstances.map(instance => (
         <Confetti
           key={instance.id}
