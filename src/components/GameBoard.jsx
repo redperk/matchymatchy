@@ -142,16 +142,16 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
   return (
     <div className="flex flex-col h-screen dark:bg-gray-800 overflow-hidden">
       <div className="flex-shrink-0 pt-4 px-4">
-        <h1 className="text-white text-center text-2xl mb-2">
+        <h1 className="text-white text-center text-3xl mb-4">
           {gameEnded ? winner : `Player ${turn}'s Turn`}
         </h1>
-        <div className="flex flex-wrap justify-between text-white text-sm">
+        <div className="flex flex-wrap justify-between text-white text-xl">
           {Object.entries(matches).map(([player, score]) => (
             <div key={player} className="mr-2">{`Player ${player.replace('player', '')}: ${score}`}</div>
           ))}
         </div>
       </div>
-      <div className="flex-grow flex items-center justify-center overflow-auto px-4 pb-12">
+      <div className="flex-grow flex items-center justify-center overflow-auto px-4 pb-16">
         <div className="grid grid-cols-4 gap-2 max-w-full max-h-full">
           {cards.map((card, index) => (
             <Card
@@ -167,7 +167,12 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
       </div>
       {showWinScreen && (
         <div className="absolute inset-0 bg-gray-800 bg-opacity-90 flex flex-col items-center justify-center z-10">
-          <h2 className="text-white text-4xl mb-8">{winner}</h2>
+          <h2 className="text-white text-5xl mb-8">{winner}</h2>
+          <div className="text-white text-xl mb-8">
+          {Object.entries(matches).map(([player, score]) => (
+            <div key={player} className="mr-2">{`Player ${player.replace('player', '')} Matchys: ${score}`}</div>
+          ))}
+          </div>
           <div className="flex space-x-4">
             <button className={`bg-gradient-to-r ${colorScheme} text-white px-6 py-2 rounded`} onClick={handleReplay}>Replay</button>
             <button className={`bg-gradient-to-r ${colorScheme} text-white px-6 py-2 rounded`} onClick={onNewSelection}>Start Over</button>

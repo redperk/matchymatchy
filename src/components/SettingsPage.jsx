@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, onSelectColorScheme, selectedPlayers, selectedGenre, selectedColorScheme }) => {
+const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, onSelectColorScheme, selectedPlayers, selectedGenre, selectedColorScheme, onGenerateRandomEmojis }) => {
   const [currentPlayers, setCurrentPlayers] = useState(selectedPlayers);
   const [currentGenre, setCurrentGenre] = useState(selectedGenre);
   const [currentColorScheme, setCurrentColorScheme] = useState(selectedColorScheme);
@@ -26,6 +26,10 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, onSelectColorSc
     const genreText = genre.split(' ').slice(1).join(' ').toLowerCase();
     setCurrentGenre(genreText);
     onSelectGenre(genreText);
+
+    if (genreText === 'rando') {
+      onGenerateRandomEmojis();
+    }
   };
 
   const handleColorSchemeSelection = (colorScheme) => {
@@ -54,7 +58,11 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, onSelectColorSc
     { emoji: '😂', name: 'Faces' },
     { emoji: '🕒', name: 'Clocks' },
     { emoji: '🍦', name: 'Desserts' },
-    { emoji: '🐛', name: 'Bugs' }
+    { emoji: '🐛', name: 'Bugs' },
+    { emoji: '🌤️', name: 'Weather' },
+    { emoji: '⚽', name: 'Sports' },
+    { emoji: '🏎', name: 'Transport' },
+    { emoji: '🤷‍♂️', name: 'Rando' },
   ];
 
   return (
@@ -79,7 +87,7 @@ const SettingsPage = ({ onClose, onSelectPlayers, onSelectGenre, onSelectColorSc
           <div className="mb-8">
             <h2 className="text-white text-2xl mb-4">Select Category</h2>
             <div className="grid grid-cols-2 gap-4">
-            {genres.map(({ emoji, name }) => (
+              {genres.map(({ emoji, name }) => (
                 <button
                   key={name}
                   className={`bg-gradient-to-r ${currentColorScheme} text-white px-4 py-4 rounded ${currentGenre === name.toLowerCase() ? 'border border-white' : ''}`}
