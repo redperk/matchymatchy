@@ -1,41 +1,5 @@
 import React, { useState } from 'react';
-
-const colorSchemes = [
-  'from-blue-500 to-purple-500',
-  'from-green-500 to-blue-500',
-  'from-blue-500 to-pink-500',
-  'from-pink-500 to-orange-500',
-  'from-pink-500 to-purple-500',
-  'from-indigo-500 to-green-500',
-  'from-red-500 to-yellow-500',
-  'from-teal-500 to-indigo-500',
-  'from-cyan-500 to-violet-500',
-  'from-lime-500 to-teal-500',
-  'bg-green-500',
-  'bg-red-500',
-  'bg-blue-500',
-  'bg-purple-500',
-  'bg-pink-500',
-  'bg-orange-500',
-  'bg-indigo-500',
-  'bg-teal-500',
-  'bg-cyan-500',
-  'bg-lime-500',
-  'bg-amber-500'
-];
-
-const genres = [
-  { emoji: '🫎', name: 'Animals' },
-  { emoji: '🌲', name: 'Plants' },
-  { emoji: '😂', name: 'Faces' },
-  { emoji: '🕒', name: 'Clocks' },
-  { emoji: '🍦', name: 'Desserts' },
-  { emoji: '🐛', name: 'Bugs' },
-  { emoji: '🌤️', name: 'Weather' },
-  { emoji: '⚽', name: 'Sports' },
-  { emoji: '🏎', name: 'Transport' },
-  { emoji: '🤷‍♂️', name: 'Rando' },
-];
+import { colorSchemes, genres } from '../utils/constants';
 
 const SettingsPage = ({
   onClose,
@@ -87,7 +51,7 @@ const SettingsPage = ({
 
   return (
     <div className="flex flex-col h-screen dark:bg-gray-800 overflow-hidden">
-      <div className="flex-grow overflow-auto px-6 pb-6">
+      <div className="flex-grow overflow-auto px-6 pb-32">
         <h1 className="text-white text-4xl p-6 text-center">Settings</h1>
         <div className="max-w-md mx-auto">
           <div className="mb-8">
@@ -137,9 +101,9 @@ const SettingsPage = ({
           </div>
         </div>
       </div>
-      <div className="sticky bottom-0 bg-gray-800 p-6 pb-20">
+      <div className="fixed bottom-[env(safe-area-inset-bottom)] bg-gray-800 p-4 w-full">
         <button
-          className={`bg-gradient-to-r ${currentColorScheme} text-white px-10 py-4 rounded w-full`}
+          className={`bg-gradient-to-r ${currentColorScheme} text-white px-10 py-4 rounded block mx-auto w-full max-w-lg`}
           onClick={onClose}
         >
           Close
