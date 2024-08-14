@@ -3,7 +3,7 @@ import Card from './Card';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 
-const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme }) => {
+const GameBoard = ({ selectedEmojis, numPlayers, onNewSelection, colorScheme, playerColorSchemes }) => {
   const [cards, setCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState([]);
   const [turn, setTurn] = useState(1);
@@ -12,6 +12,7 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
   const [gameEnded, setGameEnded] = useState(false);
   const [confettiInstances, setConfettiInstances] = useState([]);
   const [winner, setWinner] = useState(null);
+  const [playerColorScheme, setPlayerColorScheme] = useState(colorScheme);
 
   const { width, height } = useWindowSize();
 
@@ -28,7 +29,7 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
 
   useEffect(() => {
     const initializeGame = () => {
-      const shuffledCards = [...selectedAnimals, ...selectedAnimals]
+      const shuffledCards = [...selectedEmojis, ...selectedEmojis]
         .sort(() => Math.random() - 0.5)
         .map((animal, index) => ({ id: index, animal, isFlipped: false, isMatched: false }));
       setCards(shuffledCards);
@@ -45,7 +46,7 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
     };
 
     initializeGame();
-  }, [selectedAnimals, numPlayers]);
+  }, [selectedEmojis, numPlayers]);
 
   const handleCardClick = (index) => {
     if (cards[index].isFlipped || cards[index].isMatched || flippedCards.length === 2) return;
@@ -81,6 +82,8 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
           setCards(newCards);
           setFlippedCards([]);
           setTurn(turn === numPlayers ? 1 : turn + 1);
+          setPlayerColorScheme(playerColorSchemes[`player${turn === numPlayers ? 1 : turn + 1}`]);
+
         }, 1000);
       }
     }
@@ -102,7 +105,7 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
   }, [cards, gameStarted, matches]);
 
   const handleReplay = () => {
-    const shuffledCards = [...selectedAnimals, ...selectedAnimals]
+    const shuffledCards = [...selectedEmojis, ...selectedEmojis]
       .sort(() => Math.random() - 0.5)
       .map((animal, index) => ({ id: index, animal, isFlipped: false, isMatched: false }));
     setCards(shuffledCards);
@@ -115,6 +118,7 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
     setTurn(1);
     setGameEnded(false);
     setWinner(null);
+    setPlayerColorScheme(playerColorSchemes['player1']);
   };
 
   const calculateCardSize = () => {
@@ -123,7 +127,7 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
     const numRows = Math.ceil(numCards / numCols);
 
     const headerHeight = 50; // Estimated height for header
-    const footerHeight = 80; // Estimated height for footer
+    const footerHeight = 100; // Estimated height for footer
 
     const availableHeight = window.innerHeight - headerHeight - footerHeight; // 32px for padding
     const availableWidth = width - 32; // 32px for padding
@@ -145,9 +149,11 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
         <h1 className="text-white text-center text-3xl mb-4">
           {gameEnded ? winner : `Player ${turn}'s Turn`}
         </h1>
-        <div className="flex flex-wrap justify-between text-white text-xl">
-          {Object.entries(matches).map(([player, score]) => (
-            <div key={player} className="mr-2">{`Player ${player.replace('player', '')}: ${score}`}</div>
+        <div className="grid grid-cols-2 text-white text-xl">
+          {Object.entries(matches).map(([player, score], index) => (
+            <div key={player} className={`${index % 2 !== 0 ? 'text-right' : ''} mr-2`}>
+              {`Player ${player.replace('player', '')}: ${score}`}
+            </div>
           ))}
         </div>
       </div>
@@ -160,22 +166,22 @@ const GameBoard = ({ selectedAnimals, numPlayers, onNewSelection, colorScheme })
               isFlipped={card.isFlipped || card.isMatched}
               onClick={() => handleCardClick(index)}
               cardSize={cardSize}
-              colorScheme={colorScheme}
+              colorScheme={playerColorScheme}
             />
           ))}
         </div>
       </div>
       {showWinScreen && (
         <div className="absolute inset-0 bg-gray-800 bg-opacity-90 flex flex-col items-center justify-center z-10">
-          <h2 className="text-white text-5xl mb-8">{winner}</h2>
-          <div className="text-white text-xl mb-8">
-          {Object.entries(matches).map(([player, score]) => (
-            <div key={player} className="mr-2">{`Player ${player.replace('player', '')} Matchys: ${score}`}</div>
-          ))}
+          <h2 className={`bg-gradient-to-r ${playerColorScheme} bg-clip-text text-transparent text-7xl mb-8 text-center`}>{winner}</h2>
+          <div className="text-white text-2xl mb-8">
+            {Object.entries(matches).map(([player, score]) => (
+              <div key={player} className="mr-2">{`Player ${player.replace('player', '')} Matchys: ${score}`}</div>
+            ))}
           </div>
           <div className="flex space-x-4">
-            <button className={`bg-gradient-to-r ${colorScheme} text-white px-6 py-2 rounded`} onClick={handleReplay}>Replay</button>
-            <button className={`bg-gradient-to-r ${colorScheme} text-white px-6 py-2 rounded`} onClick={onNewSelection}>Start Over</button>
+            <button className={`bg-gradient-to-r ${playerColorScheme} text-white px-6 py-2 rounded`} onClick={handleReplay}>Replay</button>
+            <button className={`bg-gradient-to-r ${playerColorScheme} text-white px-6 py-2 rounded`} onClick={onNewSelection}>Start Over</button>
           </div>
         </div>
       )}

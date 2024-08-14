@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useWindowSize } from 'react-use';
 
 const EmojiSelection = ({ onSubmit, selectedGenre, colorScheme, genres }) => {
   const [selectedEmojis, setSelectedEmojis] = useState([]);
-
-  const { width, height } = useWindowSize();
   const [buttonSize, setButtonSize] = useState({ width: '64px', height: '64px', fontSize: '32px' });
 
   useEffect(() => {
@@ -12,8 +9,8 @@ const EmojiSelection = ({ onSubmit, selectedGenre, colorScheme, genres }) => {
       const numCols = 4;
       const numRows = Math.ceil(genres[selectedGenre].length / numCols);
 
-      const availableHeight = height - 200; // Subtract space for header, footer, and margins
-      const buttonWidth = width / numCols - 16; // 16px for gap
+      const availableHeight = window.innerHeight - 200; // Subtract space for header, footer, and margins
+      const buttonWidth = window.innerWidth / numCols - 16; // 16px for gap
       const buttonHeight = availableHeight / numRows - 16; // 16px for gap
 
       const size = Math.min(buttonWidth, buttonHeight, 100); // Cap the size at 100px
@@ -24,7 +21,7 @@ const EmojiSelection = ({ onSubmit, selectedGenre, colorScheme, genres }) => {
     calculateButtonSize();
     window.addEventListener('resize', calculateButtonSize);
     return () => window.removeEventListener('resize', calculateButtonSize);
-  }, [width, height, selectedGenre, genres]);
+  }, [selectedGenre, genres]);
 
   const handleEmojiClick = (emoji) => {
     setSelectedEmojis((prev) => {

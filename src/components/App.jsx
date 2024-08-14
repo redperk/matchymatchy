@@ -4,6 +4,18 @@ import EmojiSelection from './EmojiSelection';
 import GameBoard from './GameBoard';
 import SettingsPage from './SettingsPage';
 
+const initialGenres = {
+  animals: ['🐅', '🐻', '🐼', '🦊', '🦄', '🫎', '🐖', '🐊', '🦒', '🦏', '🦈', '🐡', '🐕', '🐈', '🐉', '🐒'],
+  plants: ['🌲', '🌳', '🌴', '🌵', '🌿', '🍀', '🍁', '🍂', '🍃', '🌺', '🌻', '🌼', '🌷', '🌸', '💐', '🍄'],
+  faces: ['😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '🥰', '😗'],
+  clocks: ['🕐', '🕑', '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚', '🕛', '🕜', '🕝', '🕞', '🕟'],
+  desserts: ['🍰', '🍦', '🍧', '🍨', '🍩', '🍪', '🎂', '🍫', '🍬', '🍭', '🍮', '🍯', '🥧', '🧁', '🍡', '🥠'],
+  bugs: ['🐜', '🐞', '🦗', '🕷️', '🦂', '🐛', '🦋', '🐝', '🪲', '🪳', '🪰', '🪱', '🦟', '🐌', '🕸️', '🦀'],
+  weather: ['☀️', '🌤️', '⛅', '🌥️', '🌦️', '🌧️', '🌨️', '☁️', '🌩️', '🌪️', '🌈', '☔', '❄️', '💧', '💨', '⚡'],
+  sports: ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏉', '🎳', '🏓', '🏸', '🏒', '🏑', '🥍', '🥌', '⛳', '🎿'],
+  transport: ['🛴', '🚲', '🏍️', '🏎️', '🎠', '🚙', '🚂', '🚁', '⛵', '🎡', '🛩️', '🚀', '🛶', '🛸', '🎢', '🚠'],
+};
+
 const App = () => {
   const [selectedEmojis, setSelectedEmojis] = useState([]);
   const [numPlayers, setNumPlayers] = useState(2); // Default to 2 players
@@ -11,36 +23,15 @@ const App = () => {
   const [selectedColorScheme, setSelectedColorScheme] = useState('from-blue-500 to-purple-500'); // Default color scheme
   const [showSettings, setShowSettings] = useState(false);
   const [inGame, setInGame] = useState(false);
-
-  const initialGenres = {
-    animals: ['🐅', '🐻', '🐼', '🦊', '🦄', '🫎', '🐖', '🐊', '🦒', '🦏', '🦈', '🐡', '🐕', '🐈', '🐉', '🐒'],
-    plants: ['🌲', '🌳', '🌴', '🌵', '🌿', '🍀', '🍁', '🍂', '🍃', '🌺', '🌻', '🌼', '🌷', '🌸', '💐', '🍄'],
-    faces: ['😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '🥰', '😗'],
-    clocks: ['🕐', '🕑', '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚', '🕛', '🕜', '🕝', '🕞', '🕟'],
-    desserts: ['🍰', '🍦', '🍧', '🍨', '🍩', '🍪', '🎂', '🍫', '🍬', '🍭', '🍮', '🍯', '🥧', '🧁', '🍡', '🥠'],
-    bugs: ['🐜', '🐞', '🦗', '🕷️', '🦂', '🐛', '🦋', '🐝', '🪲', '🪳', '🪰', '🪱', '🦟', '🐌', '🕸️', '🦀'],
-    weather: ['☀️', '🌤️', '⛅', '🌥️', '🌦️', '🌧️', '🌨️', '☁️', '🌩️', '🌪️', '🌈', '☔', '❄️', '💧', '💨', '⚡'],
-    sports: ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏉', '🎳', '🏓', '🏸', '🏒', '🏑', '🥍', '🥌', '⛳', '🎿'],
-    transport: ['🛴', '🚲', '🏍️', '🏎️', '🎠', '🚙', '🚂', '🚁', '⛵', '🎡', '🛩️', '🚀', '🛶', '🛸', '🎢', '🚠'],
-  };
-
   const [genres, setGenres] = useState(initialGenres);
+  const [playerColorSchemes, setPlayerColorSchemes] = useState({ player1: 'from-blue-500 to-purple-500', player2: 'from-blue-500 to-purple-500' });
 
-  const generateRandomEmojis = (num) => {
-    const allEmojis = Object.values(genres).flat();
-    const randomEmojis = new Set(); // Use a Set to ensure uniqueness
-
-    while (randomEmojis.size < num) {
-      const randomIndex = Math.floor(Math.random() * allEmojis.length);
-      randomEmojis.add(allEmojis[randomIndex]); // Add emoji to the Set
-    }
-
-    return Array.from(randomEmojis); // Convert Set back to array
-  };
 
   const handleEmojiSelection = (emojis) => {
     setSelectedEmojis(emojis);
-    setInGame(true);
+    if (emojis.length > 0) {
+      setInGame(true);
+    }
   };
 
   const handleNewSelection = () => {
@@ -57,6 +48,25 @@ const App = () => {
     setGenres({ ...genres, rando, });
   };
 
+  const handleUpdatePlayerColorScheme = (player, colorScheme) => {
+    setPlayerColorSchemes((prev) => ({ ...prev, [player]: colorScheme }));
+    if(player === 'player1') {
+      setSelectedColorScheme(colorScheme);
+    }
+  };
+
+  const generateRandomEmojis = (num) => {
+    const allEmojis = Object.values(initialGenres).flat();
+    const randomEmojis = new Set();
+
+    while (randomEmojis.size < num) {
+      const randomIndex = Math.floor(Math.random() * allEmojis.length);
+      randomEmojis.add(allEmojis[randomIndex]);
+    }
+
+    return Array.from(randomEmojis);
+  };
+
   return (
     <div className="flex flex-col min-h-screen dark:bg-gray-800">
       {showSettings ? (
@@ -64,30 +74,28 @@ const App = () => {
           onClose={handleSettingsClose}
           onSelectPlayers={setNumPlayers}
           onSelectGenre={setSelectedGenre}
-          onSelectColorScheme={setSelectedColorScheme}
+          onUpdatePlayerColorScheme={handleUpdatePlayerColorScheme}
           selectedPlayers={numPlayers}
           selectedGenre={selectedGenre}
           selectedColorScheme={selectedColorScheme}
+          playerColorSchemes={playerColorSchemes}
           onGenerateRandomEmojis={handleGenerateRandomEmojis}
         />
       ) : selectedEmojis.length === 0 ? (
-        <div className="flex-grow">
-          <EmojiSelection
-            onSubmit={handleEmojiSelection}
-            selectedGenre={selectedGenre}
-            colorScheme={selectedColorScheme}
-            genres={genres}
-          />
-        </div>
+        <EmojiSelection
+          onSubmit={handleEmojiSelection}
+          selectedGenre={selectedGenre}
+          colorScheme={selectedColorScheme}
+          genres={genres}
+        />
       ) : (
-        <div className="flex-grow">
-          <GameBoard
-            selectedAnimals={selectedEmojis}
-            numPlayers={numPlayers}
-            onNewSelection={handleNewSelection}
-            colorScheme={selectedColorScheme}
-          />
-        </div>
+        <GameBoard
+          selectedEmojis={selectedEmojis}
+          numPlayers={numPlayers}
+          onNewSelection={handleNewSelection}
+          colorScheme={selectedColorScheme}
+          playerColorSchemes={playerColorSchemes}
+        />
       )}
       {!showSettings && !inGame && (
         <button
