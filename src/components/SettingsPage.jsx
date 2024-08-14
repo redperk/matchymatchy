@@ -51,7 +51,7 @@ const SettingsPage = ({
 
   return (
     <div className="flex flex-col h-screen dark:bg-gray-800 overflow-hidden">
-      <div className="flex-grow overflow-auto px-6 pb-32">
+      <div className="flex-grow overflow-auto px-6 pb-40">
         <h1 className="text-white text-4xl p-6 text-center">Settings</h1>
         <div className="max-w-md mx-auto">
           <div className="mb-8">
