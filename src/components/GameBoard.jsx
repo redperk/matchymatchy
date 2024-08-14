@@ -143,6 +143,8 @@ const GameBoard = ({ selectedEmojis, numPlayers, onNewSelection, colorScheme, pl
 
   const cardSize = calculateCardSize();
 
+  const isATie = winner !== null && winner.includes('tie');
+
   return (
     <div className="flex flex-col h-screen dark:bg-gray-800 overflow-hidden">
       <div className="flex-shrink-0 pt-4 px-4">
@@ -173,15 +175,15 @@ const GameBoard = ({ selectedEmojis, numPlayers, onNewSelection, colorScheme, pl
       </div>
       {showWinScreen && (
         <div className="absolute inset-0 bg-gray-800 bg-opacity-90 flex flex-col items-center justify-center z-10">
-          <h2 className={`bg-gradient-to-r ${playerColorScheme} bg-clip-text text-transparent text-7xl mb-8 text-center`}>{winner}</h2>
+          <h2 className={`${isATie ? 'text-white' : `bg-gradient-to-r ${playerColorScheme}`}  bg-clip-text text-transparent text-7xl mb-8 text-center`}>{winner}</h2>
           <div className="text-white text-2xl mb-8">
             {Object.entries(matches).map(([player, score]) => (
               <div key={player} className="mr-2">{`Player ${player.replace('player', '')} Matchys: ${score}`}</div>
             ))}
           </div>
           <div className="flex space-x-4">
-            <button className={`bg-gradient-to-r ${playerColorScheme} text-white px-6 py-2 rounded`} onClick={handleReplay}>Replay</button>
-            <button className={`bg-gradient-to-r ${playerColorScheme} text-white px-6 py-2 rounded`} onClick={onNewSelection}>Start Over</button>
+            <button className={`bg-gradient-to-r ${isATie ? 'from-blue-500 to-purple-500' : playerColorScheme} text-white px-6 py-2 rounded`} onClick={handleReplay}>Replay</button>
+            <button className={`bg-gradient-to-r ${isATie ? 'from-blue-500 to-purple-500' : playerColorScheme} text-white px-6 py-2 rounded`} onClick={onNewSelection}>Start Over</button>
           </div>
         </div>
       )}
