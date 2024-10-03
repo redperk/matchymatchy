@@ -98,8 +98,11 @@ const GameBoard = ({ selectedEmojis, numPlayers, onNewSelection, colorScheme, pl
 
       if (winners.length > 1) {
         setWinner("It's a tie!");
+        setTimeout(() => setPlayerColorScheme(colorScheme), 350);
       } else {
-        setWinner(`Player ${winners[0][0].replace('player', '')} wins!`);
+        const winningPlayer = winners[0][0];
+        setWinner(`Player ${winningPlayer.replace('player', '')} wins!`);
+        setTimeout(() => setPlayerColorScheme(playerColorSchemes[winningPlayer]), 350);
       }
     }
   }, [cards, gameStarted, matches]);
